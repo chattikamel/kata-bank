@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <operations id="123" montant="500" identifiant_compte="FR562233" date="2023-11-26 19:49:05"/>
+    <operations id="124" montant="-500" identifiant_compte="FR562233" date="2023-11-26 19:49:05"/>
+</dataset>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <operations id="1" montant="150" identifiant_compte="FR562233" date="[now]"/>
+    <operations id="2" montant="-50" identifiant_compte="FR562233" date="[now]"/>
+    <operations id="3" montant="-50" identifiant_compte="FR562233" date="[now]"/>
+    <operations id="5" montant="100" identifiant_compte="FR562244" date="[now]"/>
+    <operations id="6" montant="250" identifiant_compte="FR562244" date="[now]"/>
+    <operations id="7" montant="300" identifiant_compte="FR562244" date="[now]"/>
+</dataset>
