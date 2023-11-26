@@ -36,6 +36,16 @@ Fonctionnalité: Opérations
       | -120                  | 70                | 2023-12-10T10:15:30         |FR11223377  |
 
 
+    Scénario:  Consultation de l'historique des opérations
+      Etant donné un client avec un compte bancaire FR11223344
+      Et des anciennes opérations bancaires:
+        | 100               | 2050-12-10T10:15:30         |
+        | 1500              | 2024-12-03T10:15:30         |
+        | -70               | 2023-12-10T10:15:30         |
+      Alors l'historique doit etre restitué
+
+
+
 
 
 

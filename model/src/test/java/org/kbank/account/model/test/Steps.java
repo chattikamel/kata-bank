@@ -10,11 +10,12 @@ import org.kbank.account.model.OperationRetrait;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -44,7 +45,6 @@ public class Steps implements Fr, LambdaGlue {
                                 .findAny()
                                 .get()
         );
-
 
         Quand("il fait un dépot d'argent de {} le {iso-date}", (BigDecimal montant, LocalDateTime date) -> {
 
@@ -77,9 +77,31 @@ public class Steps implements Fr, LambdaGlue {
         });
 
 
+        Etantdonné("des anciennes opérations bancaires:", (DataTable data) -> {
+            data.cells().forEach(l -> {
+                BigDecimal montant = new BigDecimal(l.get(0));
+                LocalDateTime date = ISO_LOCAL_DATE_TIME.parse(l.get(1),LocalDateTime::from);
+                if(montant.signum() > 0){
+                    compte.depot(new OperationDepot(montant, date));
+                }else {
+                    compte.retrait(new OperationRetrait(montant.abs(), date));
+                }
+
+            });
+        });
+
+        Alors("l'historique doit etre restitué", () -> {
+            compteRepsitory.findAllOperationForCompte(compte.getIdentifiant());
+            assertThat(compteRepsitory.findAllOperationForCompte(compte.getIdentifiant()))
+                    .filteredOn(op -> Objects.equals(op.getIdentifiantCompte(), compte.getIdentifiant()))
+                    .size()
+                    .isEqualTo(3);
+        });
+
+
         ParameterType("iso-date",
                 "((\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d*)?)((-(\\d{2}):(\\d{2})|Z)?))",
-                str -> LocalDateTime.parse(str, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                str -> LocalDateTime.parse(str, ISO_LOCAL_DATE_TIME));
 
     }
 
