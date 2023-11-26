@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +46,6 @@ public class Steps implements Fr, LambdaGlue {
         );
 
         Quand("il fait un dépot d'argent de {} le {iso-date}", (BigDecimal montant, LocalDateTime date) -> {
-
             operationEnCours = new OperationDepot(montant, date);
             compte.depot((OperationDepot) operationEnCours);
         });
@@ -58,37 +56,21 @@ public class Steps implements Fr, LambdaGlue {
         });
 
 
-        Alors("l'opération doit être ajoutée à l'historique des opérations de compte", () -> {
-
-            Operation expectedOp = operationEnCours instanceof OperationDepot ?
-                    ((OperationDepot) operationEnCours).toBuilder().build() :
-                    ((OperationRetrait) operationEnCours).toBuilder().build();
-
-            Optional<Operation> operation = compteRepsitory.findOperation(operationEnCours.getUiid());
-
-            assertThat(operation)
-                    .isPresent()
-                    .hasValue(expectedOp);
-        });
+        Alors("l'opération doit être ajoutée à l'historique des opérations de compte", () -> assertThat(
+                compteRepsitory.findOperation(operationEnCours.getUiid()))
+                .isPresent()
+                .hasValue(StepsHelper.clone(operationEnCours)));
 
 
-        Alors("le solde de compte doit egal à {}", (BigDecimal solde) -> {
-            assertThat(compte.getSolde()).isEqualTo(solde);
-        });
+        Alors("le solde de compte doit egal à {}", (BigDecimal solde) -> assertThat(compte.getSolde()).isEqualTo(solde));
 
 
-        Etantdonné("des anciennes opérations bancaires:", (DataTable data) -> {
-            data.cells().forEach(l -> {
-                BigDecimal montant = new BigDecimal(l.get(0));
-                LocalDateTime date = ISO_LOCAL_DATE_TIME.parse(l.get(1),LocalDateTime::from);
-                if(montant.signum() > 0){
-                    compte.depot(new OperationDepot(montant, date));
-                }else {
-                    compte.retrait(new OperationRetrait(montant.abs(), date));
-                }
+        Etantdonné("des anciennes opérations bancaires:", (DataTable data) ->
+                data.cells()
+                        .stream().map(StepsHelper::toOperation)
+                        .forEach(compte::traiter)
 
-            });
-        });
+        );
 
         Alors("l'historique doit etre restitué", () -> {
             compteRepsitory.findAllOperationForCompte(compte.getIdentifiant());

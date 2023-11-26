@@ -27,4 +27,11 @@ public class Compte {
         solde = solde.add(retrait.getMontant().negate());
         compteRepository.save(retrait);
     }
+
+    public void traiter(Operation operation) {
+        if (operation instanceof OperationDepot)
+            depot((OperationDepot) operation);
+        else
+            retrait((OperationRetrait) operation);
+    }
 }
