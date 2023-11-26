@@ -21,4 +21,10 @@ public class Compte {
         solde = solde.add(depot.getMontant());
         compteRepository.save(depot);
     }
+
+    public void retrait(OperationRetrait retrait) {
+        retrait.setIdentifiantCompte(identifiant);
+        solde = solde.add(retrait.getMontant().negate());
+        compteRepository.save(retrait);
+    }
 }

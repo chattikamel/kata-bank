@@ -23,6 +23,18 @@ Fonctionnalité: Opérations
     | 1500                  | 1500              | 2024-12-03T10:15:30         |FR11223366  |
     | 20                    | 70                | 2023-12-10T10:15:30         |FR11223377  |
 
+  Plan du Scénario: retrait d'argent
+    Etant donné un client avec un compte bancaire <identifiant>
+    Quand  il fait un retrait de <montantOperation> le <dateOperation>
+    Alors l'opération doit être ajoutée à l'historique des opérations de compte
+    Et le solde de compte doit egal à <soldeApresOperation>
+
+    Exemples:
+      | soldeApresOperation   | montantOperation  | dateOperation               |identifiant |
+      | 50                    | 100               | 2050-12-10T10:15:30         |FR11223344  |
+      | -1500                 | 1500              | 2024-12-03T10:15:30         |FR11223366  |
+      | -120                  | 70                | 2023-12-10T10:15:30         |FR11223377  |
+
 
 
 
