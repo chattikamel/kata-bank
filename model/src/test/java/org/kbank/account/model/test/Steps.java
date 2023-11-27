@@ -5,8 +5,6 @@ import io.cucumber.java8.Fr;
 import io.cucumber.java8.LambdaGlue;
 import org.kbank.account.model.Compte;
 import org.kbank.account.model.Operation;
-import org.kbank.account.model.OperationDepot;
-import org.kbank.account.model.OperationRetrait;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -46,20 +44,20 @@ public class Steps implements Fr, LambdaGlue {
         );
 
         Quand("il fait un dépot d'argent de {} le {iso-date}", (BigDecimal montant, LocalDateTime date) -> {
-            operationEnCours = new OperationDepot(montant, date);
-            compte.depot((OperationDepot) operationEnCours);
+            operationEnCours = new Operation(montant, date);
+            compte.traiter(operationEnCours);
         });
 
         Quand("il fait un retrait de {} le {iso-date}", (BigDecimal montant, LocalDateTime date) -> {
-            operationEnCours = new OperationRetrait(montant, date);
-            compte.retrait((OperationRetrait) operationEnCours);
+            operationEnCours = new Operation(montant, date);
+            compte.traiter(operationEnCours);
         });
 
 
         Alors("l'opération doit être ajoutée à l'historique des opérations de compte", () -> assertThat(
                 compteRepsitory.findOperation(operationEnCours.getUiid()))
                 .isPresent()
-                .hasValue(StepsHelper.clone(operationEnCours)));
+                .hasValue(operationEnCours.clone()));
 
 
         Alors("le solde de compte doit egal à {}", (BigDecimal solde) -> assertThat(compte.getSolde()).isEqualTo(solde));

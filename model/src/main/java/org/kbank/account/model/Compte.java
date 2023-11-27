@@ -3,6 +3,7 @@ package org.kbank.account.model;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 @Data
 public class Compte {
@@ -16,22 +17,17 @@ public class Compte {
         this.compteRepository = compteRepository;
     }
 
-    public void depot(OperationDepot depot) {
+    public Compte(String identifiantCompte, CompteRepository compteRepository) {
+        this(identifiantCompte,BigDecimal.ZERO, compteRepository);
+    }
+
+    public void traiter(Operation depot) {
         depot.setIdentifiantCompte(identifiant);
         solde = solde.add(depot.getMontant());
         compteRepository.save(depot);
     }
 
-    public void retrait(OperationRetrait retrait) {
-        retrait.setIdentifiantCompte(identifiant);
-        solde = solde.add(retrait.getMontant().negate());
-        compteRepository.save(retrait);
-    }
-
-    public void traiter(Operation operation) {
-        if (operation instanceof OperationDepot)
-            depot((OperationDepot) operation);
-        else
-            retrait((OperationRetrait) operation);
+    public Stream<Operation> listerOperations() {
+        return compteRepository.findAllOperationForCompte(identifiant);
     }
 }

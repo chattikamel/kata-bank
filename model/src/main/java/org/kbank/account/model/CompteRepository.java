@@ -1,10 +1,10 @@
 package org.kbank.account.model;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface CompteRepository {
 
     void save(Operation operation);
 
-    List<Operation> findAllOperationForCompte(String identifiant);
+    Stream<Operation> findAllOperationForCompte(String identifiant);
 }

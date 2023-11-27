@@ -31,9 +31,9 @@ Fonctionnalité: Opérations
 
     Exemples:
       | soldeApresOperation   | montantOperation  | dateOperation               |identifiant |
-      | 50                    | 100               | 2050-12-10T10:15:30         |FR11223344  |
-      | -1500                 | 1500              | 2024-12-03T10:15:30         |FR11223366  |
-      | -120                  | 70                | 2023-12-10T10:15:30         |FR11223377  |
+      | 50                    | -100              | 2050-12-10T10:15:30         |FR11223344  |
+      | -1500                 | -1500             | 2024-12-03T10:15:30         |FR11223366  |
+      | -120                  | -70               | 2023-12-10T10:15:30         |FR11223377  |
 
 
     Scénario:  Consultation de l'historique des opérations

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class MockCompteRepsitory implements CompteRepository {
@@ -20,10 +20,9 @@ public class MockCompteRepsitory implements CompteRepository {
     }
 
     @Override
-    public List<Operation> findAllOperationForCompte(String identifiant) {
+    public Stream<Operation> findAllOperationForCompte(String identifiant) {
         return operations.stream()
-                .filter(op -> op.getIdentifiantCompte().equals(identifiant))
-                .collect(Collectors.toList());
+                .filter(op -> op.isForCompte(identifiant));
     }
 
 
