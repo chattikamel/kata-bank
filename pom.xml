@@ -18,6 +18,7 @@
     <modules>
         <module>model</module>
         <module>sql-persistence</module>
+        <module>api</module>
     </modules>
 
     <dependencyManagement>
