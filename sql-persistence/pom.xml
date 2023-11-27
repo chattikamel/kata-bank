@@ -32,6 +32,13 @@
             <artifactId>spring-data-jdbc</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+        </dependency>
+
         <!-- Test dependencies -->
 
         <dependency>
@@ -52,12 +59,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>

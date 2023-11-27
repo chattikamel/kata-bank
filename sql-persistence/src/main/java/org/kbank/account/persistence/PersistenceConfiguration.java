@@ -21,6 +21,7 @@ public class PersistenceConfiguration {
                 .setScriptEncoding("UTF-8")
                 .ignoreFailedDrops(true)
                 .addScript("schema.sql")
+                .addScript("operations.sql")
                 .build();
     }
 }
