@@ -10,10 +10,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kbank.account.model.Compte.ouverture;
 
 
 public class Steps implements Fr, LambdaGlue {
@@ -30,7 +31,7 @@ public class Steps implements Fr, LambdaGlue {
         Etantdonné("les comptes bancaires suivants \\(identifiant, solde initial):", (DataTable data) ->
                 data.asMap(String.class, BigDecimal.class)
                         .forEach((idt, solde) ->
-                                comptes.add(new Compte(idt, solde, compteRepsitory))
+                                comptes.add(ouverture(idt, solde, compteRepsitory))
                         )
         );
 
@@ -40,7 +41,7 @@ public class Steps implements Fr, LambdaGlue {
                                 .stream()
                                 .filter(c -> c.getIdentifiant().equals(identifiantCompte))
                                 .findAny()
-                                .get()
+                                .orElse(new Compte(compteRepsitory, identifiantCompte))
         );
 
         Quand("il fait un dépot d'argent de {} le {iso-date}", (BigDecimal montant, LocalDateTime date) -> {
@@ -60,7 +61,7 @@ public class Steps implements Fr, LambdaGlue {
                 .hasValue(operationEnCours.clone()));
 
 
-        Alors("le solde de compte doit egal à {}", (BigDecimal solde) -> assertThat(compte.getSolde()).isEqualTo(solde));
+        Alors("le solde de compte doit égale à {}", (BigDecimal solde) -> assertThat(compte.solde()).isEqualTo(solde));
 
 
         Etantdonné("des anciennes opérations bancaires:", (DataTable data) ->
@@ -71,11 +72,10 @@ public class Steps implements Fr, LambdaGlue {
         );
 
         Alors("l'historique doit etre restitué", () -> {
-            compteRepsitory.findAllOperationForCompte(compte.getIdentifiant());
-            assertThat(compteRepsitory.findAllOperationForCompte(compte.getIdentifiant()))
-                    .filteredOn(op -> Objects.equals(op.getIdentifiantCompte(), compte.getIdentifiant()))
-                    .size()
-                    .isEqualTo(3);
+            assertThat(compte.listerOperations().collect(Collectors.toList()))
+                    .isEqualTo(compteRepsitory.findAllOperationForCompte(
+                            compte.getIdentifiant()).collect(Collectors.toList()));
+
         });
 
 

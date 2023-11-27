@@ -15,7 +15,7 @@ Fonctionnalité: Opérations
     Etant donné un client avec un compte bancaire <identifiant>
     Quand  il fait un dépot d'argent de <montantOperation> le <dateOperation>
     Alors l'opération doit être ajoutée à l'historique des opérations de compte
-    Et le solde de compte doit egal à <soldeApresOperation>
+    Et le solde de compte doit égale à <soldeApresOperation>
 
     Exemples:
     | soldeApresOperation   | montantOperation  | dateOperation               |identifiant |
@@ -27,7 +27,7 @@ Fonctionnalité: Opérations
     Etant donné un client avec un compte bancaire <identifiant>
     Quand  il fait un retrait de <montantOperation> le <dateOperation>
     Alors l'opération doit être ajoutée à l'historique des opérations de compte
-    Et le solde de compte doit egal à <soldeApresOperation>
+    Et le solde de compte doit égale à <soldeApresOperation>
 
     Exemples:
       | soldeApresOperation   | montantOperation  | dateOperation               |identifiant |
@@ -39,10 +39,20 @@ Fonctionnalité: Opérations
     Scénario:  Consultation de l'historique des opérations
       Etant donné un client avec un compte bancaire FR11223344
       Et des anciennes opérations bancaires:
+        | 150               | 2023-12-10T10:15:30         |
         | 100               | 2050-12-10T10:15:30         |
         | 1500              | 2024-12-03T10:15:30         |
         | -70               | 2023-12-10T10:15:30         |
       Alors l'historique doit etre restitué
+
+
+  Scénario:  Consultation du solde
+    Etant donné un client avec un compte bancaire FR112233488
+    Et des anciennes opérations bancaires:
+      | 100               | 2050-12-10T10:15:30         |
+      | 1500              | 2024-12-03T10:15:30         |
+      | -70               | 2023-12-10T10:15:30         |
+    Alors le solde de compte doit égale à 1530
 
 
 

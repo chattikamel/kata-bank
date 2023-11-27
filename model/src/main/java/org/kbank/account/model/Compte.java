@@ -1,33 +1,39 @@
 package org.kbank.account.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Data
+@AllArgsConstructor
 public class Compte {
     private final CompteRepository compteRepository;
-    private BigDecimal solde;
     private final String identifiant;
 
-    public Compte(String identifiantCompte, BigDecimal solde, CompteRepository compteRepository) {
-        this.identifiant = identifiantCompte;
-        this.solde = solde;
-        this.compteRepository = compteRepository;
+    public static Compte ouverture(String identifiant, BigDecimal soldeInitial, CompteRepository compteRepsitory) {
+        Compte compte = new Compte(compteRepsitory, identifiant);
+        compte.traiter(new Operation(soldeInitial, LocalDateTime.now()));
+        return compte;
     }
 
-    public Compte(String identifiantCompte, CompteRepository compteRepository) {
-        this(identifiantCompte,BigDecimal.ZERO, compteRepository);
-    }
 
-    public void traiter(Operation depot) {
-        depot.setIdentifiantCompte(identifiant);
-        solde = solde.add(depot.getMontant());
-        compteRepository.save(depot);
+    public void traiter(Operation operation) {
+        operation.setIdentifiantCompte(identifiant);
+        compteRepository.save(operation);
     }
 
     public Stream<Operation> listerOperations() {
         return compteRepository.findAllOperationForCompte(identifiant);
+    }
+
+    public BigDecimal solde() {
+        return listerOperations()
+                .map(Operation::getMontant)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
     }
 }
