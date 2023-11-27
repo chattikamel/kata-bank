@@ -10,10 +10,10 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 public class StepsHelper {
 
-    public static Operation toOperation(List<String> strings) {
+    public static Operation toOperation(List<String> strings, String identifiant) {
         BigDecimal montant = new BigDecimal(strings.get(0));
         LocalDateTime date = ISO_LOCAL_DATE_TIME.parse(strings.get(1), LocalDateTime::from);
-        return new Operation(montant, date);
+        return new Operation(identifiant, montant, date);
     }
 
 }

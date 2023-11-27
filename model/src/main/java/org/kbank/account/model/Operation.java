@@ -19,8 +19,9 @@ public class Operation {
     protected LocalDateTime date;
     protected String identifiantCompte;
 
-    public Operation(BigDecimal montant, LocalDateTime date) {
+    public Operation(String identifiantCompte, BigDecimal montant, LocalDateTime date) {
         this.uiid = UUID.randomUUID();
+        this.identifiantCompte = identifiantCompte;
         this.montant = montant;
         this.date = date;
     }
