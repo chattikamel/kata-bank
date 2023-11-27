@@ -1,6 +1,6 @@
 package org.kbank.account.api;
 
-import org.kbank.account.model.Compte;
+import org.kbank.account.model.CompteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +15,18 @@ import java.util.stream.Collectors;
 public class CompteApi {
 
     @Autowired
-    ApiCompteRepository apiCompteRepository;
+    CompteService compteService;
 
     @PostMapping(value = "/operations/{identifiant}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void ajouterOperation(@PathVariable("identifiant") final String identifiant, @RequestBody Operation operation) {
-        Compte compte = new Compte(apiCompteRepository, identifiant);
-        compte.traiter(toOperationModel(operation));
+        operation.setIdentifiantCompte(identifiant);
+        compteService.traiter(toOperationModel(operation));
     }
 
     @ResponseBody
     @GetMapping(value = "/operations/{identifiant}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Operation> listerOperations(@PathVariable("identifiant") final String identifiant) {
-        return new Compte(apiCompteRepository, identifiant)
-                .listerOperations()
+        return compteService.listerOperations(identifiant)
                 .map(toOperationApi)
                 .collect(Collectors.toList());
     }
@@ -35,8 +34,7 @@ public class CompteApi {
     @ResponseBody
     @GetMapping(value = "/solde/{identifiant}", produces = MediaType.APPLICATION_JSON_VALUE)
     public BigDecimal recupererSolde(@PathVariable("identifiant") final String identifiant) {
-        return new Compte(apiCompteRepository, identifiant)
-                .solde();
+        return compteService.solde(identifiant);
     }
 
     private static Function<org.kbank.account.model.Operation, Operation> toOperationApi = op -> Operation.builder()
@@ -47,7 +45,10 @@ public class CompteApi {
             .build();
 
     private static org.kbank.account.model.Operation toOperationModel(Operation op) {
-        return new org.kbank.account.model.Operation(op.getMontant(), op.getDate());
+        return new org.kbank.account.model.Operation(
+                op.getIdentifiantCompte(),
+                op.getMontant(),
+                op.getDate());
     }
 
 }
